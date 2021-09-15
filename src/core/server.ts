@@ -1,7 +1,6 @@
 import { EventEmitter } from 'events';
 import Koa from 'koa';
-import { dirname, join } from 'path';
-import recursive = require('recursive-readdir');
+import * as globby from 'globby';
 import { buildProviderModule } from 'inversify-binding-decorators';
 import { TYPES } from '../constants';
 import { deepAssign } from './../utils';
@@ -11,7 +10,7 @@ import { monkeyContainer } from './container';
 const getDefaultOptions = (obj: Record<string, any>) => {
     return {
         name: 'monkey server',
-        rootPath: '',
+        pathPattern: [],
         bodyOptions: {},
         debug: false,
         loggerOptions: {},
@@ -20,7 +19,7 @@ const getDefaultOptions = (obj: Record<string, any>) => {
 };
 
 class MonkeyServer extends EventEmitter {
-    [key: string]: any;
+    // [key: string]: any;
     public name!: string;
     public app: Koa;
     public options: Options;
@@ -29,8 +28,8 @@ class MonkeyServer extends EventEmitter {
         super();
         this.app = new Koa();
         console.log('服务参数：', options);
-        const rootPath = options.rootPath || dirname(require?.main?.filename as string);
-        const mergeOptions: PartialOptions = getDefaultOptions({ rootPath });
+        const pathPattern = options.pathPattern || [`${process.cwd()}/src`];
+        const mergeOptions: PartialOptions = getDefaultOptions({ pathPattern });
         deepAssign(mergeOptions, options);
         // @ts-ignore
         this.options = mergeOptions;
@@ -39,30 +38,35 @@ class MonkeyServer extends EventEmitter {
     }
 
     public listen(...args: any): Server {
+        // 监听时进行加载模块
+        this.mounted();
         this.httpServer = this.app.listen.apply(this.app, args);
         return this.httpServer;
     }
 
     // 初始化绑定数据
     public async mounted() {
+        this.loadFile();
         // 加载文件并进行绑定
         monkeyContainer.load(buildProviderModule());
     }
 
     // 加载文件
-    public async loadFile(path: string) {
-        return this._loadFile(join(this.options.rootPath, path));
-    }
-    private async _loadFile(path: string) {
-        return recursive(path).then((files) => {
-            return files.filter((file) => {
-                return /\.[j|t]s$/.test(file);
+    public loadFile() {
+        try {
+            const pathPattern = this.options.pathPattern;
+            const files = globby.sync(pathPattern);
+            const reg = /\.[j|t]s$/;
+            files.filter((file) => {
+                return reg.test(file);
             }).map((file) => {
-                return file.replace(/\.[j|t]s$/, '');
+                return file.replace(reg, '');
             }).forEach((file: string) => {
                 require(file);
             });
-        });      
+        } catch (error) {
+            console.error(error);
+        }     
     }
 }
 

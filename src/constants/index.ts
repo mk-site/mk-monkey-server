@@ -18,3 +18,23 @@ export const SERVICE = 'monkey:service';
 
 // 中间件
 export const MIDDLEWARE_NAME = 'monkey:middleware_name';
+
+export const METADATA_KEY = {
+    controller: 'mk-monkey-server:controller',
+    controllerPriority: 'mk-monkey-server:controllerPriority',
+    controllerMiddlewares: 'mk-monkey-server:controllerMiddlewares',
+    middlewareName: 'mk-monkey-server:middlewareName',
+    services: 'mk-monkey-server:services',
+};
+
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export enum HTTP_ENUM {
+    ALL = 'all',
+    DELETE = 'delete',
+    GET = 'get',
+    HEAD = 'head',
+    OPTIONS = 'options',
+    PATCH = 'patch',
+    POST = 'post',
+    PUT = 'put',
+}

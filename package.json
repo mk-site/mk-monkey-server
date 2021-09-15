@@ -7,6 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "ts-node src/index.ts --files",
     "dev": "ts-node-dev src/app.ts --watch",
+    "t": "ts-node-dev src/test.ts --watch",
     "build": "tsc"
   },
   "keywords": [
@@ -21,22 +22,19 @@
   "dependencies": {
     "@koa/router": "^10.1.1",
     "@types/cron": "^1.7.3",
-    "@types/events": "^3.0.0",
     "@types/koa": "^2.13.4",
     "@types/koa__router": "^8.0.8",
-    "@types/recursive-readdir": "^2.2.0",
+    "@types/node": "^16.9.1",
     "cron": "^1.8.2",
-    "events": "^3.3.0",
+    "globby": "^11.0.4",
     "inversify": "^5.1.1",
     "inversify-binding-decorators": "^4.0.0",
     "inversify-inject-decorators": "^3.1.0",
     "koa": "^2.13.1",
     "koa-body": "^4.2.0",
-    "recursive-readdir": "^2.2.2",
     "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {
-    "@types/node": "^16.9.1",
     "eslint-config-mkscanner": "^1.0.4",
     "ts-node-dev": "^1.1.8",
     "typescript": "^4.4.3"

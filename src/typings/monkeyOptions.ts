@@ -13,7 +13,7 @@ export interface Options {
     bodyOptions: koaBody.IKoaBodyOptions;
     name: string;
     debug?: boolean;
-    rootPath: string;
+    pathPattern: string[];
     loggerOptions: Record<string, any>;
     [key: string]: any;
 }
