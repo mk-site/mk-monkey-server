@@ -11,6 +11,7 @@ type RecursivePartial<T> = {
 export interface Options {
     middlewares: string[];
     bodyOptions: koaBody.IKoaBodyOptions;
+    apiPrefix: string;
     name: string;
     debug?: boolean;
     pathPattern: string[];

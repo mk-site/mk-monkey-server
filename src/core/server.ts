@@ -10,6 +10,7 @@ import { monkeyContainer } from './container';
 const getDefaultOptions = (obj: Record<string, any>) => {
     return {
         name: 'monkey server',
+        apiPrefix: '/api',
         pathPattern: [],
         bodyOptions: {},
         debug: false,
@@ -37,10 +38,10 @@ class MonkeyServer extends EventEmitter {
         console.log('options参数', mergeOptions);
     }
 
-    public listen(...args: any): Server {
+    public listen(): Server {
         // 监听时进行加载模块
         this.mounted();
-        this.httpServer = this.app.listen.apply(this.app, args);
+        this.httpServer = this.app.listen.call(this.app, arguments);
         return this.httpServer;
     }
 
@@ -51,7 +52,7 @@ class MonkeyServer extends EventEmitter {
         monkeyContainer.load(buildProviderModule());
     }
 
-    // 加载文件
+    // 加载模块
     public loadFile() {
         try {
             const pathPattern = this.options.pathPattern;
