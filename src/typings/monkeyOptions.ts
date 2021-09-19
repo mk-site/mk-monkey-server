@@ -8,7 +8,7 @@ type RecursivePartial<T> = {
             : T[P];
 };
 
-export interface Options {
+export interface ServerOptions {
     middlewares: string[];
     bodyOptions: koaBody.IKoaBodyOptions;
     apiPrefix: string;
@@ -19,4 +19,4 @@ export interface Options {
     [key: string]: any;
 }
 
-export type PartialOptions = RecursivePartial<Options>;
+export type PartialOptions = RecursivePartial<ServerOptions>;
