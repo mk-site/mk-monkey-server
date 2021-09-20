@@ -5,7 +5,7 @@
         "module": "CommonJS",
         "lib": ["es6", "DOM"],
         // "rootDir": "./",
-        "baseUrl": "./src",
+        "baseUrl": "./",
         "outDir": "./build",
         "types": ["reflect-metadata"],
         "moduleResolution": "node",
@@ -13,9 +13,10 @@
         "esModuleInterop": true,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
-        "declaration": true,
-        "declarationDir": "./types",
+        // "declaration": true,
+        // "declarationDir": "./types",
     },
-    "include": ["./src/**/*.ts", "./examples/**/*.ts"],
+    // "include": ["./src/**/*.ts", "./examples/**/*.ts"],
+    "include": ["./src/**/*.ts"],
     "exclude": ["node_modules", "dist"]
 }
