@@ -55,6 +55,7 @@ class RouterPlugin implements PluginClass {
                     const funcNameMiddlewares = Reflect.getMetadata(METADATA_KEY.middlewareName, controllerMetadataItem.target, funcName) || [];
                     middlewares = middlewares.concat(funcNameMiddlewares);
                     console.log('middlewares', middlewares);
+
                     // 使用中间
                     controllerRoutePathArray.forEach((meta) => {
                         const routePath = urljoin('/', controllerMetadataItem.path || '', meta.path).replace(/\/\//g, '/');
@@ -93,9 +94,10 @@ class RouterPlugin implements PluginClass {
                                     }
                                 });
                                 ctx.reqContainer.bind<Constructor>(controllerMetadataItem.target.name).to(controllerMetadataItem.target);
-                                const instance = ctx.reqContainer.get(controllerMetadataItem.target.name);
+                                let instance = ctx.reqContainer.get(controllerMetadataItem.target.name);
                                 // @ts-ignore
                                 await instance[funcName](ctx, next);
+                                instance = null;
                             },
                         );
                     });

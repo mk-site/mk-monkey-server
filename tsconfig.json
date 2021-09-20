@@ -13,7 +13,7 @@
         "esModuleInterop": true,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
-        // "declaration": true,
+        "declaration": true,
         // "declarationDir": "./types",
     },
     // "include": ["./src/**/*.ts", "./examples/**/*.ts"],

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { plugin, PluginClass, MonkeyServer } from '../../../';
+import { plugin, PluginClass, MonkeyServer } from '../../..';
 
 @plugin()
 class TestPlugin implements PluginClass {

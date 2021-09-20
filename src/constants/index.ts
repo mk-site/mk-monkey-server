@@ -6,7 +6,7 @@ export const TYPES = {
     MiddlewareClass: Symbol.for('MiddlewareClass'),
     ServiceClass: Symbol.for('ServiceClass'),
     ModelClass: Symbol.for('ModelClass'),
-    Timer: Symbol.for('Timer'),
+    TimerClass: Symbol.for('TimerClass'),
 };
 
 export const METADATA_KEY = {

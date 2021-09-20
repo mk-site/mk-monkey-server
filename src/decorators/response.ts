@@ -48,9 +48,3 @@ export function header(key: string | Record<string, string>, value?: string) {
         };
     };
 }
-
-export function redirect(path: string) {
-    return function (proto: Object, name: string) {
-        Reflect.defineMetadata(METADATA_KEY.redirect, path, proto.constructor, name);
-    };
-}

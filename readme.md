@@ -6,9 +6,3 @@
 [container API文档](https://github.com/inversify/InversifyJS/blob/master/wiki/container_api.md)
 
 ###
-
-
-disabled  类 + 函数
-json
-redirect
-header

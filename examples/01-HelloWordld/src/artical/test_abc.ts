@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { controller, Get, Context, Next, disabled, interfaces, inject } from '../../../index';
+import { controller, Get, Context, Next, inject } from '../../../index';
 import TestService from '../service/index';
 
 @controller('/test', [{ middlewareName: 'test-article-middleware' }])
-class Artical {
+export default class Artical {
     @inject('TestService') public testService!: TestService;
     constructor() {
         console.log('test 实例');

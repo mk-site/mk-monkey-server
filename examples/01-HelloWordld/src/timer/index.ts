@@ -1,24 +1,19 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { CronJob } from 'cron';
-import { plugin, TimerClass, MonkeyServer, timer } from '../../../index';
-
-@timer()
+import { plugin, TimerClass, MonkeyServer, timer, CronJob } from '../../../index';
+// @timer()
 export default class TestTimer implements TimerClass {
-    cronTime: string;
+    cronTime!: string;
     start?: boolean | undefined;
     timeZone?: string | undefined;
     runOnInit?: boolean | undefined;
     context?: any;
-    constructor() {
+    async initTimer(monkerServer: MonkeyServer) {
         this.cronTime = '* * * * * *';
     }
-    public async initTimer(monkerServer: MonkeyServer) {
-        console.log('测试插件');
+    async onComplete(job: CronJob, monkeyServer: MonkeyServer) {
+        console.log('timer 任务完成');
     }
-    public async onComplete() {
-        console.log('onComplete');
-    }
-    public async onTick() {
-        console.log('onTick');
+    async onTick(job: CronJob, monkeyServer: MonkeyServer) {
+        console.log('timer onTick');
     }
 }

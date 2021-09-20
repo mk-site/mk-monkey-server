@@ -1,14 +1,16 @@
 {
   "name": "mk-monkey-server",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "mk-server node node-server",
-  "main": "build/index.js",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "ts-node-dev src/index.ts --watch",
-    "dev": "ts-node-dev examples/01-HelloWordld/app.ts --watch",
-    "t": "ts-node-dev src/test.ts --watch",
-    "build": "tsc"
+    "build": "rimraf -rf build &&  tsc",
+    "example:helloWorld": "ts-node-dev examples/01-helloWordld/app.ts --watch",
+    "example:project": "ts-node-dev examples/02-project/app.ts --watch",
+    "prepublishOnly": "npm run build"
   },
   "keywords": [
     "node-server"
@@ -40,6 +42,7 @@
     "eslint-config-mkscanner": "^1.0.4",
     "ts-node-dev": "^1.1.8",
     "typescript": "^4.4.3",
-    "url-join": "^4.0.1"
+    "url-join": "^4.0.1",
+    "rimraf": "^3.0.2"
   }
 }
