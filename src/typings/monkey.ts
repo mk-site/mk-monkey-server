@@ -11,14 +11,12 @@ export interface MiddlewareClass {
     initMiddleware: (monkeyServer: MonkeyServer) => Koa.Middleware | void | Function;
 }
 
-export interface MonkeyContext extends Koa.Context {
+export interface Context extends Koa.Context {
     parent: Container,
     reqContainer: Container,
     [key: string]: any
 }
 
-export interface MonkeyNext extends Koa.Next {
-
-}
+export interface Next extends Koa.Next {}
 
 

@@ -4,7 +4,7 @@ import urljoin from 'url-join';
 import Router from '@koa/router';
 import { is } from '../../utils';
 import { plugin } from '../../decorators/plugin';
-import { PluginClass, MiddlewareClass, Constructor, ControllerMetadata, MonkeyContext, MonkeyNext } from '../../typings';
+import { PluginClass, MiddlewareClass, Constructor, ControllerMetadata, ServiceMetadata, Context, Next } from '../../typings';
 import { MonkeyServer, monkeyContainer } from '../../core';
 import { METADATA_KEY, TYPES } from '../../constants';
 
@@ -13,13 +13,14 @@ class RouterPlugin implements PluginClass {
     public async initPlugin(monkerServer: MonkeyServer) {
         console.log('初始化路由插件');
         monkerServer.on('monkey-binding-init', () => {
-            monkerServer.emit('monkey-router-before');
             const router = new Router({
                 prefix: monkerServer.options.apiPrefix || undefined,
             });
             monkerServer.router = router;
-            const originControllers: ControllerMetadata[] = Reflect.getMetadata(METADATA_KEY.controller, Reflect);
-            const services = Reflect.getMetadata(METADATA_KEY.service, Reflect);
+            monkerServer.emit('monkey-router-before');
+            const originControllers: ControllerMetadata[] = Reflect.getMetadata(METADATA_KEY.controller, Reflect) || [];
+            const services: ServiceMetadata[] = Reflect.getMetadata(METADATA_KEY.service, Reflect) || [];
+            console.log('services ---> ', services);
             const controllerMetadatas = originControllers.sort((a, b) => {
                 const A = Reflect.getMetadata(METADATA_KEY.controllerPriority, a.target) || 0;
                 const B = Reflect.getMetadata(METADATA_KEY.controllerPriority, b.target) || 0;
@@ -28,9 +29,21 @@ class RouterPlugin implements PluginClass {
 
             controllerMetadatas.forEach((controllerMetadataItem) => {
                 console.log('router controller', controllerMetadataItem);
+                const controllerDisabled = Reflect.getMetadata(METADATA_KEY.disabledController, controllerMetadataItem.target);
+                console.log('controllerDisabled', controllerDisabled);
+                if (controllerDisabled) {
+                    console.log('class disabled ', controllerMetadataItem.target);
+                    return;
+                }
+
                 const routeFuncs: string[] = Reflect.getMetadata(METADATA_KEY.controllerFunctionName, controllerMetadataItem.target);
                 console.log('routeFuncs', routeFuncs);
                 routeFuncs.forEach((funcName) => {
+                    const controllerMethodDisabled = Reflect.getMetadata(METADATA_KEY.disabledControllerMethod, controllerMetadataItem.target, funcName);
+                    if (controllerMethodDisabled) {
+                        console.warn('function disabled ', controllerMetadataItem.target, funcName);
+                        return;
+                    }
                     // @ts-ignore
                     const controllerRoutePathArray: Array<{ path: string, method: string }> = Reflect.getMetadata(
                         METADATA_KEY.controllerRoutePath,
@@ -38,17 +51,19 @@ class RouterPlugin implements PluginClass {
                         funcName,
                     );
                     console.log('controllerRoutePathArray', controllerRoutePathArray);
+                    let middlewares: Array<{ middlewareName: string, options?: Record<string, any> }> = controllerMetadataItem.middlewares || [];
+                    const funcNameMiddlewares = Reflect.getMetadata(METADATA_KEY.middlewareName, controllerMetadataItem.target, funcName) || [];
+                    middlewares = middlewares.concat(funcNameMiddlewares);
+                    console.log('middlewares', middlewares);
+                    // 使用中间
                     controllerRoutePathArray.forEach((meta) => {
                         const routePath = urljoin('/', controllerMetadataItem.path || '', meta.path).replace(/\/\//g, '/');
-                        let middlewares: Array<{ middlewareName: string, options?: Record<string, any> }> = controllerMetadataItem.middlewares || [];
-                        const funcNameMiddlewares = Reflect.getMetadata(METADATA_KEY.middlewareName, controllerMetadataItem.target, funcName) || [];
-                        middlewares = middlewares.concat(funcNameMiddlewares);
-                        // 使用中间件
                         middlewares.forEach((item) => {
                             const mid = monkeyContainer.getNamed<MiddlewareClass>(TYPES.MiddlewareClass, item.middlewareName);
                             if (is.Function(mid.initMiddleware)) {
                                 let middlewareFunction: any = mid.initMiddleware(monkerServer);
-                                if (is.Function(middlewareFunction)) {
+                                console.log('-========', middlewareFunction);
+                                if (middlewareFunction) {
                                     console.log('中间件', middlewareFunction);
                                     if (item.options) {
                                         // @ts-ignore
@@ -63,7 +78,20 @@ class RouterPlugin implements PluginClass {
                         // 设置路由
                         monkerServer.router[meta.method](
                             routePath,
-                            async (ctx: MonkeyContext, next: MonkeyNext) => {
+                            async (ctx: Context, next: Next) => {
+
+                                services.forEach((serviceItem) => {
+                                    // 全局services服务
+                                    if (!serviceItem.pathArray) {
+                                        ctx.reqContainer.bind<Constructor>(serviceItem.target.name).to(serviceItem.target);
+                                        return;
+                                    }
+                                    // 局部服务
+                                    const controllerPath = urljoin('/', controllerMetadataItem.path);
+                                    if (serviceItem.pathArray.includes(controllerPath)) {
+                                        ctx.reqContainer.bind<Constructor>(serviceItem.target.name).to(serviceItem.target);
+                                    }
+                                });
                                 ctx.reqContainer.bind<Constructor>(controllerMetadataItem.target.name).to(controllerMetadataItem.target);
                                 const instance = ctx.reqContainer.get(controllerMetadataItem.target.name);
                                 // @ts-ignore

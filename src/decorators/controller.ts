@@ -26,3 +26,19 @@ export const priority = (value: number) => {
         Reflect.defineMetadata(METADATA_KEY.controllerPriority, value, target);
     };
 };
+
+export const disabled = () => {
+    return function (proto: Object, name?: string) {
+        console.log('----------disabled', proto, name);
+        if (name) {
+            const target = proto.constructor;
+            // const methodsDisabledArray = Reflect.getMetadata(METADATA_KEY.disabledControllerMethod, target, name) || [];
+            // let newMetadata = []
+            Reflect.defineMetadata(METADATA_KEY.disabledControllerMethod, 'disabled', target, name);
+        } else {
+            // const classDisabledArray = Reflect.getMetadata(METADATA_KEY.disabledController, proto) || [];
+            // let newMetadata = []
+            Reflect.defineMetadata(METADATA_KEY.disabledController, 'disabled', proto);
+        }
+    };
+};

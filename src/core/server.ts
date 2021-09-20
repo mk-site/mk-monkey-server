@@ -30,14 +30,14 @@ class MonkeyServer extends EventEmitter {
     constructor(options: PartialOptions) {
         super();
         this.app = new Koa();
-        console.log('服务参数：', options);
+        // console.log('服务参数：', options);
         const pathPattern = options.pathPattern || [`${process.cwd()}/src`];
         const mergeOptions: PartialOptions = getDefaultOptions({ pathPattern });
         deepAssign(mergeOptions, options);
         // @ts-ignore
         this.options = mergeOptions;
         this.name = mergeOptions.name || '';
-        console.log('options参数', mergeOptions);
+        // console.log('options参数', mergeOptions);
     }
 
     listen(port?: number, hostname?: string, backlog?: number, listeningListener?: () => void): Server;

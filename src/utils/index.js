@@ -9,9 +9,5 @@ var __createBinding = (this && this.__createBinding) || (Object.create ? (functi
 var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.TYPES = void 0;
-require("reflect-metadata");
-var constants_1 = require("./constants");
-Object.defineProperty(exports, "TYPES", { enumerable: true, get: function () { return constants_1.TYPES; } });
-__exportStar(require("./core"), exports); // 容器、服务
+exports.__esModule = true;
+__exportStar(require("./is"), exports);

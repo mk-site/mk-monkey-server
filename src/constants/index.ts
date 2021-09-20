@@ -6,6 +6,7 @@ export const TYPES = {
     MiddlewareClass: Symbol.for('MiddlewareClass'),
     ServiceClass: Symbol.for('ServiceClass'),
     ModelClass: Symbol.for('ModelClass'),
+    Timer: Symbol.for('Timer'),
 };
 
 export const METADATA_KEY = {
@@ -19,6 +20,9 @@ export const METADATA_KEY = {
     middlewareName: 'mk-monkey-server:middlewareName',
     service: 'mk-monkey-server:service',
     model: 'mk-monkey-server:model',
+    disabledController: 'mk-monkey-server:disabledController',
+    disabledControllerMethod: 'mk-monkey-server:disabledControllerMethod',
+    redirect: 'mk-monkey-server:redirect',
 };
 
 // eslint-disable-next-line @typescript-eslint/naming-convention

@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { controller, Get, Context, Next, disabled } from '../../../index';
-import { inject } from 'inversify';
+import { controller, Get, Context, Next, disabled, interfaces, inject } from '../../../index';
+import TestService from '../service/index';
 
-@controller('/artical')
+@controller('/test', [{ middlewareName: 'test-article-middleware' }])
 class Artical {
-    // @inject('TestService') public testService: any;
+    @inject('TestService') public testService!: TestService;
     constructor() {
-        console.log('Artical 实例');
+        console.log('test 实例');
     }
     @Get('/get')
     async getList(ctx: Context, next: Next) {
-        console.log('查询');
+        console.log('查询', this.testService.getList('123'));
         ctx.body = 123;
         next();
     }
