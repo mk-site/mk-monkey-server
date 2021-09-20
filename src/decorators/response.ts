@@ -1,4 +1,3 @@
-import { METADATA_KEY } from '../constants';
 import { Context, Next } from '../typings';
 import { is } from '../utils';
 

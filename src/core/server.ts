@@ -58,7 +58,7 @@ class MonkeyServer extends EventEmitter {
         this.loadFile([path.join(__dirname, '../helpers')]);
         this.loadFile(this.options.pathPattern);
         const plugins = monkeyContainer.getAll<PluginClass>(TYPES.PluginClass);
-        console.log('插件', plugins);
+        console.log('插件列表', plugins);
         for (const plugin of plugins) {
             const res = await plugin.initPlugin(this);
             if (monkeyContainer.isBoundNamed(TYPES.PluginInstance, plugin.constructor.name)) {
