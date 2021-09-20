@@ -1,14 +1,22 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { plugin } from '../../decorators/plugin';
-import { PluginClass, MiddlewareClass } from '../../typings';
+import { PluginClass } from '../../typings';
 import { MonkeyServer } from '../../core/server';
-import { METADATA_KEY, TYPES } from '../../constants';
-import { monkeyContainer } from '../../core';
+import ExitHook from '../../packages/exitHook';
 
 // 中间件插件
 @plugin()
 class ExitHookPlugin implements PluginClass {
     public async initPlugin(monkeyServer: MonkeyServer) {
-        console.log('ExitHookPlugin');
+        let exitHook = new ExitHook({
+            onExit: (err: Error | null) => {
+                console.log('process err:', err);
+                monkeyServer.emit('exit', err, monkeyServer);
+            },
+            onExitDone: (code: number) => {
+                console.log(`process exited: ${code}`);
+            },
+        });
+        return exitHook;
     }
 }

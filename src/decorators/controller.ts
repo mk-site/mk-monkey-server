@@ -29,7 +29,6 @@ export const priority = (value: number) => {
 
 export const disabled = () => {
     return function (proto: Object, name?: string) {
-        console.log('----------disabled', proto, name);
         if (name) {
             const target = proto.constructor;
             // const methodsDisabledArray = Reflect.getMetadata(METADATA_KEY.disabledControllerMethod, target, name) || [];

@@ -7,7 +7,6 @@ function handleMethodDecorator(method: HTTP_ENUM, path: string, target: Object, 
         console.warn(`[${target.constructor.name} Decorator @${method}] parameter must be a string`);
         return;
     }
-    console.log('方法', method, path, target, functionName, 'target.constructor.name', target.constructor.name);
     const targetConstructor = target.constructor;
 
     // 函数名

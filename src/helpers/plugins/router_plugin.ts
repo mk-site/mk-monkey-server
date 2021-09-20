@@ -11,7 +11,6 @@ import { METADATA_KEY, TYPES } from '../../constants';
 @plugin()
 class RouterPlugin implements PluginClass {
     public async initPlugin(monkerServer: MonkeyServer) {
-        console.log('初始化路由插件');
         monkerServer.on('monkey-binding-init', () => {
             const router = new Router({
                 prefix: monkerServer.options.apiPrefix || undefined,
@@ -20,7 +19,6 @@ class RouterPlugin implements PluginClass {
             monkerServer.emit('monkey-router-before');
             const originControllers: ControllerMetadata[] = Reflect.getMetadata(METADATA_KEY.controller, Reflect) || [];
             const services: ServiceMetadata[] = Reflect.getMetadata(METADATA_KEY.service, Reflect) || [];
-            console.log('services ---> ', services);
             const controllerMetadatas = originControllers.sort((a, b) => {
                 const A = Reflect.getMetadata(METADATA_KEY.controllerPriority, a.target) || 0;
                 const B = Reflect.getMetadata(METADATA_KEY.controllerPriority, b.target) || 0;
@@ -28,16 +26,13 @@ class RouterPlugin implements PluginClass {
             });
 
             controllerMetadatas.forEach((controllerMetadataItem) => {
-                console.log('router controller', controllerMetadataItem);
                 const controllerDisabled = Reflect.getMetadata(METADATA_KEY.disabledController, controllerMetadataItem.target);
-                console.log('controllerDisabled', controllerDisabled);
                 if (controllerDisabled) {
                     console.log('class disabled ', controllerMetadataItem.target);
                     return;
                 }
 
                 const routeFuncs: string[] = Reflect.getMetadata(METADATA_KEY.controllerFunctionName, controllerMetadataItem.target);
-                console.log('routeFuncs', routeFuncs);
                 routeFuncs.forEach((funcName) => {
                     const controllerMethodDisabled = Reflect.getMetadata(METADATA_KEY.disabledControllerMethod, controllerMetadataItem.target, funcName);
                     if (controllerMethodDisabled) {
@@ -50,11 +45,9 @@ class RouterPlugin implements PluginClass {
                         controllerMetadataItem.target,
                         funcName,
                     );
-                    console.log('controllerRoutePathArray', controllerRoutePathArray);
                     let middlewares: Array<{ middlewareName: string, options?: Record<string, any> }> = controllerMetadataItem.middlewares || [];
                     const funcNameMiddlewares = Reflect.getMetadata(METADATA_KEY.middlewareName, controllerMetadataItem.target, funcName) || [];
                     middlewares = middlewares.concat(funcNameMiddlewares);
-                    console.log('middlewares', middlewares);
 
                     // 使用中间
                     controllerRoutePathArray.forEach((meta) => {
@@ -63,9 +56,7 @@ class RouterPlugin implements PluginClass {
                             const mid = monkeyContainer.getNamed<MiddlewareClass>(TYPES.MiddlewareClass, item.middlewareName);
                             if (is.Function(mid.initMiddleware)) {
                                 let middlewareFunction: any = mid.initMiddleware(monkerServer);
-                                console.log('-========', middlewareFunction);
                                 if (middlewareFunction) {
-                                    console.log('中间件', middlewareFunction);
                                     if (item.options) {
                                         // @ts-ignore
                                         middlewareFunction = middlewareFunction(options);

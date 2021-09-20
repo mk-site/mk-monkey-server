@@ -30,14 +30,12 @@ class MonkeyServer extends EventEmitter {
     constructor(options: PartialOptions) {
         super();
         this.app = new Koa();
-        // console.log('服务参数：', options);
         const pathPattern = options.pathPattern || [`${process.cwd()}/src`];
         const mergeOptions: PartialOptions = getDefaultOptions({ pathPattern });
         deepAssign(mergeOptions, options);
         // @ts-ignore
         this.options = mergeOptions;
         this.name = mergeOptions.name || '';
-        // console.log('options参数', mergeOptions);
     }
 
     listen(port?: number, hostname?: string, backlog?: number, listeningListener?: () => void): Server;
@@ -60,7 +58,7 @@ class MonkeyServer extends EventEmitter {
         this.loadFile([path.join(__dirname, '../helpers')]);
         this.loadFile(this.options.pathPattern);
         const plugins = monkeyContainer.getAll<PluginClass>(TYPES.PluginClass);
-        console.log('插件列表', plugins);
+        console.log('插件', plugins);
         for (const plugin of plugins) {
             const res = await plugin.initPlugin(this);
             if (monkeyContainer.isBoundNamed(TYPES.PluginInstance, plugin.constructor.name)) {
@@ -86,7 +84,6 @@ class MonkeyServer extends EventEmitter {
                 }).map((file) => {
                     return file.replace(reg, '');
                 }).forEach((file: string) => {
-                    console.log('加载文件', file);
                     require(file);
                 });
             }

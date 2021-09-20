@@ -9,13 +9,10 @@ import { PluginClass, TimerClass } from '../../typings';
 export default class Timer implements PluginClass {
     public async initPlugin(monkeyServer: MonkeyServer) {
         monkeyServer.on('monkey-binding-init', () => {
-            console.log('-------------------------', monkeyContainer.isBound(TYPES.TimerClass));
             if (!monkeyContainer.isBound(TYPES.TimerClass)) {
                 return;
             }
-            const timerArray = monkeyContainer.getAll<TimerClass>(TYPES.TimerClass);
-            console.log('tim', timerArray);
-            
+            const timerArray = monkeyContainer.getAll<TimerClass>(TYPES.TimerClass);            
             timerArray.forEach((job: TimerClass) => {
                 job.initTimer(monkeyServer);
                 const instance: CronJob = new CronJob(
