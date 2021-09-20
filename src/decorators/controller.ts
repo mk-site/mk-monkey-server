@@ -14,7 +14,6 @@ export const controller = (
             target,
         };
         injectable()(target);
-        // Reflect.defineMetadata(METADATA_KEY.controllerMiddlewares, middlewares, target);
         let controllers = Reflect.getMetadata(METADATA_KEY.controller, Reflect) || [];
         let newMetadata = [currentMetadata, ...controllers];
         Reflect.defineMetadata(METADATA_KEY.controller, newMetadata, Reflect);
@@ -31,12 +30,8 @@ export const disabled = () => {
     return function (proto: Object, name?: string) {
         if (name) {
             const target = proto.constructor;
-            // const methodsDisabledArray = Reflect.getMetadata(METADATA_KEY.disabledControllerMethod, target, name) || [];
-            // let newMetadata = []
             Reflect.defineMetadata(METADATA_KEY.disabledControllerMethod, 'disabled', target, name);
         } else {
-            // const classDisabledArray = Reflect.getMetadata(METADATA_KEY.disabledController, proto) || [];
-            // let newMetadata = []
             Reflect.defineMetadata(METADATA_KEY.disabledController, 'disabled', proto);
         }
     };
